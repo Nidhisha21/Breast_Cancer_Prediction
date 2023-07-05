@@ -75,7 +75,6 @@ def plotCorrelationMatrix(df, graphWidth):
     plt.show()
 
 plotCorrelationMatrix(dataset, 12)
-t
 
 X = dataset[ [ col for col in dataset.columns if col != 'diagnosis' ] ]
 y = dataset['diagnosis']
