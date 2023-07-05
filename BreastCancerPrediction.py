@@ -32,7 +32,7 @@ def Barplot(df, nGraphShown, nGraphPerRow):
     nRow, nCol = df.shape
     columnNames = list(df)
     nGraphRow = int((nCol + nGraphPerRow - 1) / nGraphPerRow)
-    plt.figure(num = None, figsize = (3 * nGraphPerRow, 5 * nGraphRow), dpi = 120, facecolor = 'w', edgecolor = 'k')
+    plt.figure(num = None, figsize = (2 * nGraphPerRow, 4 * nGraphRow), dpi = 120, facecolor = 'w', edgecolor = 'k')
     for i in range(min(nCol, nGraphShown)):
         plt.subplot(nGraphRow, nGraphPerRow, i + 1)
         columnDf = df.iloc[:, i]
@@ -52,11 +52,30 @@ def Barplot(df, nGraphShown, nGraphPerRow):
 
 Barplot(dataset, 1, 1)
 
-
 # Encoding the Dependent Variable
 from sklearn.preprocessing import LabelEncoder
 le = LabelEncoder()
 dataset['diagnosis'] = le.fit_transform(dataset['diagnosis'])
+
+# Correlation matrix
+def plotCorrelationMatrix(df, graphWidth):
+    df = df[[col for col in df if df[col].nunique() > 1]] # keep columns where there are more than 1 unique values
+    if df.shape[1] < 2:
+        print(f'No correlation plots shown: The number of non-NaN or constant columns ({df.shape[1]}) is less than 2')
+        return
+    corr = df.corr()
+    plt.figure(num=None, figsize=(graphWidth, graphWidth), dpi=120, facecolor='w', edgecolor='k')
+    corrMat = plt.matshow(corr, fignum = 1)
+    plt.xticks(range(len(corr.columns)), corr.columns, rotation=90)
+    plt.yticks(range(len(corr.columns)), corr.columns)
+    plt.gca().xaxis.tick_bottom()
+    plt.colorbar(corrMat)
+    plt.title(f'Correlation Matrix', fontsize=15)
+    plt.savefig("image/correlation_matrix.png")
+    plt.show()
+
+plotCorrelationMatrix(dataset, 12)
+t
 
 X = dataset[ [ col for col in dataset.columns if col != 'diagnosis' ] ]
 y = dataset['diagnosis']
